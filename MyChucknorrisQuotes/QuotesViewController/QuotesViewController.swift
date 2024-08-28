@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol TableViewViewControllerDelegate {
+    func reloadTableView()
+}
+
 class QuotesViewController: UIViewController {
     
     // MARK: - Data
+    
+    var realmStore: RealmStore
+    var currentCategory: String? = nil
     
     private enum TableViewCellReuseID: String {
         case main = "QuoteCellReuseID_ReuseID"
@@ -28,6 +35,21 @@ class QuotesViewController: UIViewController {
     }()
     
     // MARK: - Lifecycle
+    
+    init(realmStore: RealmStore) {
+        self.realmStore = realmStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(realmStore: RealmStore, category: String) {
+        self.realmStore = realmStore
+        self.currentCategory = category
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,29 +115,61 @@ extension QuotesViewController: UITableViewDataSource {
             fatalError("could not dequeueReusableCell")
         }
         
+        if let currentCategory = self.currentCategory {
+            var quotes = realmStore.fetchQuotesByCategory(category: currentCategory)
+            quotes.sort {
+                $0.cDate > $1.cDate
+            }
+            
+            cell.setup(text: quotes[indexPath.row].value)
+        } else {
+            
+            var quotes = realmStore.fetchQuotes()
+            quotes.sort {
+                $0.cDate > $1.cDate
+            }
+            
+            cell.setup(text: quotes[indexPath.row].value)
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-//            fileManageService.removeContent(index: indexPath.row)
-            
-            tableView.deleteRows(at: [indexPath], with: .fade)
+        if let currentCategory = self.currentCategory {
+            return realmStore.fetchQuotesByCategory(category: currentCategory).count
         }
-    }
         
+        return realmStore.fetchQuotes().count
+    }
 }
 
 // MARK: - UITableViewDelegate
 
 extension QuotesViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        print(indexPath)
+        if let currentCategory = self.currentCategory {
+            var quotes = realmStore.fetchQuotesByCategory(category: currentCategory)
+            quotes.sort {
+                $0.cDate > $1.cDate
+            }
+
+            AlertView.alert.show(in: self, text: quotes[indexPath.row].value)
+        } else {
+            var quotes = realmStore.fetchQuotes()
+            quotes.sort {
+                $0.cDate > $1.cDate
+            }
+            
+            AlertView.alert.show(in: self, text: quotes[indexPath.row].value)
+        }
+    }
+}
+
+// MARK: - QuotesViewControllerDelegate
+
+extension QuotesViewController: TableViewViewControllerDelegate {
+    func reloadTableView() {
+        tableView.reloadData()
     }
 }

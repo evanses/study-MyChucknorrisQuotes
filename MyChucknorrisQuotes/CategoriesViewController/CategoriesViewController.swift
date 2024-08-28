@@ -11,6 +11,8 @@ class CategoriesViewController: UIViewController {
     
     // MARK: - Data
     
+    var realmStore: RealmStore
+    
     private enum TableViewCellReuseID: String {
         case main = "CatCellReuseID_ReuseID"
     }
@@ -28,6 +30,15 @@ class CategoriesViewController: UIViewController {
     }()
     
     // MARK: - Lifecycle
+    
+    init(realmStore: RealmStore) {
+        self.realmStore = realmStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,7 +62,7 @@ class CategoriesViewController: UIViewController {
         }
         
         tableView.register(
-            QuoteTableViewCell.self,
+            CategoryTableViewCell.self,
             forCellReuseIdentifier: TableViewCellReuseID.main.rawValue
         )
         
@@ -89,25 +100,20 @@ extension CategoriesViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: TableViewCellReuseID.main.rawValue,
             for: indexPath
-        ) as? QuoteTableViewCell else {
+        ) as? CategoryTableViewCell else {
             fatalError("could not dequeueReusableCell")
         }
+        
+        let categories = realmStore.fetchCategories()
+        cell.setup(text: categories[indexPath.row])
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        let categories = realmStore.fetchCategories()
+        return categories.count
     }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-//            fileManageService.removeContent(index: indexPath.row)
-            
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-    }
-        
 }
 
 // MARK: - UITableViewDelegate
@@ -115,7 +121,16 @@ extension CategoriesViewController: UITableViewDataSource {
 extension CategoriesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let categories = realmStore.fetchCategories()
         
-        print(indexPath)
+        let realmStore = RealmStore()
+        let quotesViewController = QuotesViewController(realmStore: realmStore, category: categories[indexPath.row])
+        navigationController?.pushViewController(quotesViewController, animated: true)
+    }
+}
+
+extension CategoriesViewController: TableViewViewControllerDelegate {
+    func reloadTableView() {
+        tableView.reloadData()
     }
 }
