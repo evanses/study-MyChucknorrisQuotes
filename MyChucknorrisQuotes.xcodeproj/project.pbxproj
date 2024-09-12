@@ -21,6 +21,7 @@
 		A6DCB3392C7F0FED003EAACE /* NewQuoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6DCB3382C7F0FED003EAACE /* NewQuoteViewModel.swift */; };
 		A6DCB33B2C7F18A2003EAACE /* RealmStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6DCB33A2C7F18A2003EAACE /* RealmStore.swift */; };
 		A6DCB33E2C7F2224003EAACE /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6DCB33D2C7F2224003EAACE /* AlertView.swift */; };
+		A6DCB3702C930967003EAACE /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A6DCB36F2C930967003EAACE /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6DCB3702C930967003EAACE /* KeychainAccess in Frameworks */,
 				A6DCB3352C7F0D06003EAACE /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,6 +134,7 @@
 			name = MyChucknorrisQuotes;
 			packageProductDependencies = (
 				A6DCB3342C7F0D06003EAACE /* RealmSwift */,
+				A6DCB36F2C930967003EAACE /* KeychainAccess */,
 			);
 			productName = MyChucknorrisQuotes;
 			productReference = A6DCB30F2C7E545F003EAACE /* MyChucknorrisQuotes.app */;
@@ -163,6 +166,7 @@
 			mainGroup = A6DCB3062C7E545F003EAACE;
 			packageReferences = (
 				A6DCB3332C7F0D06003EAACE /* XCRemoteSwiftPackageReference "realm-swift" */,
+				A6DCB36E2C930967003EAACE /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = A6DCB3102C7E545F003EAACE /* Products */;
 			projectDirPath = "";
@@ -431,6 +435,14 @@
 				kind = branch;
 			};
 		};
+		A6DCB36E2C930967003EAACE /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -438,6 +450,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A6DCB3332C7F0D06003EAACE /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		A6DCB36F2C930967003EAACE /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A6DCB36E2C930967003EAACE /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
